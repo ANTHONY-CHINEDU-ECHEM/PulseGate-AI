@@ -1,0 +1,83 @@
+{
+  "epochs": 5,
+  "max_train_samples": 14000,
+  "operating_point": "eer",
+  "families": {
+    "print": {
+      "held_out_species": [
+        "print_matte",
+        "print_glossy"
+      ],
+      "threshold": 0.7749215364456177,
+      "auc_vs_unseen": 0.8867260185004531,
+      "eer_vs_unseen": 0.193702041678137,
+      "bpcer": 0.0897814530419374,
+      "apcer_unseen": {
+        "print_matte": 0.1889908256880734,
+        "print_glossy": 0.44107142857142856
+      },
+      "auc_unseen": {
+        "print_matte": 0.9356085771417114,
+        "print_glossy": 0.8391528141085141
+      },
+      "apcer_seen_pooled": 0.10860280658938377,
+      "validation_eer_seen": 0.10801191559470619
+    },
+    "replay": {
+      "held_out_species": [
+        "replay_phone",
+        "replay_monitor"
+      ],
+      "threshold": 0.7133936285972595,
+      "auc_vs_unseen": 0.8944123077798951,
+      "eer_vs_unseen": 0.18798470724188954,
+      "bpcer": 0.11340815121086828,
+      "apcer_unseen": {
+        "replay_phone": 0.4095744680851064,
+        "replay_monitor": 0.13009708737864079
+      },
+      "auc_unseen": {
+        "replay_phone": 0.8458420781440474,
+        "replay_monitor": 0.9476037825655612
+      },
+      "apcer_seen_pooled": 0.14714714714714713,
+      "validation_eer_seen": 0.1263694508629527
+    },
+    "mask": {
+      "held_out_species": [
+        "cutout_mask"
+      ],
+      "threshold": 0.6673862338066101,
+      "auc_vs_unseen": 0.6594432959243945,
+      "eer_vs_unseen": 0.38007815796135347,
+      "bpcer": 0.12935617247489664,
+      "apcer_unseen": {
+        "cutout_mask": 0.7357142857142858
+      },
+      "auc_unseen": {
+        "cutout_mask": 0.6594432959243945
+      },
+      "apcer_seen_pooled": 0.1684981684981685,
+      "validation_eer_seen": 0.1556165363477201
+    }
+  },
+  "reference": {
+    "threshold": 0.6921940445899963,
+    "eer": 0.14242178391903554,
+    "bpcer": 0.1494388659184879,
+    "apcer": {
+      "print_matte": 0.08807339449541285,
+      "print_glossy": 0.3,
+      "replay_phone": 0.2127659574468085,
+      "replay_monitor": 0.05825242718446602,
+      "cutout_mask": 0.01607142857142857
+    },
+    "auc": {
+      "print_matte": 0.9569668955277262,
+      "print_glossy": 0.8711153067251709,
+      "replay_phone": 0.8986973897525481,
+      "replay_monitor": 0.9712075421925805,
+      "cutout_mask": 0.9908478187494726
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "threshold": 0.7341110706329346,
+  "window_s": 10.0,
+  "videos": [
+    "head_pose_face_detection_female.mp4"
+  ],
+  "live": {
+    "sessions": 13,
+    "frames": 1217,
+    "frame_bpcer": 0.0,
+    "sessions_accepted": 13,
+    "sessions_rejected": 0,
+    "sessions_inconclusive": 0,
+    "median_pulse_snr_db": -1.76,
+    "sessions_with_blink": 10,
+    "per_video": {
+      "head_pose_face_detection_female": {
+        "frame_bpcer": 0.0,
+        "frames": 1217,
+        "sessions": 13
+      }
+    }
+  },
+  "attacks": {
+    "sessions": 20,
+    "frames": 1724,
+    "frame_apcer": 0.10788863109048724,
+    "sessions_accepted": 0,
+    "median_pulse_snr_db": -2.965,
+    "per_species": {
+      "print_matte": {
+        "frame_apcer": 0.008379888268156424,
+        "frames": 358,
+        "sessions": 4,
+        "sessions_accepted": 0,
+        "sessions_inconclusive": 0,
+        "mean_passive": 0.30387499999999995
+      },
+      "print_glossy": {
+        "frame_apcer": 0.19662921348314608,
+        "frames": 356,
+        "sessions": 4,
+        "sessions_accepted": 0,
+        "sessions_inconclusive": 0,
+        "mean_passive": 0.5898
+      },
+      "replay_phone": {
+        "frame_apcer": 0.3165266106442577,
+        "frames": 357,
+        "sessions": 4,
+        "sessions_accepted": 0,
+        "sessions_inconclusive": 0,
+        "mean_passive": 0.52645
+      },
+      "replay_monitor": {
+        "frame_apcer": 0.0,
+        "frames": 186,
+        "sessions": 4,
+        "sessions_accepted": 0,
+        "sessions_inconclusive": 1,
+        "mean_passive": 0.0644
+      },
+      "cutout_mask": {
+        "frame_apcer": 0.0,
+        "frames": 467,
+        "sessions": 4,
+        "sessions_accepted": 0,
+        "sessions_inconclusive": 0,
+        "mean_passive": 0.084275
+      }
+    }
+  },
+  "frame_level": {
+    "auc": 0.9992555197349231,
+    "eer": 0.014645814228819498
+  },
+  "minutes": 6.1
+}

@@ -1,0 +1,144 @@
+{
+  "clips": {
+    "same room, unseen person": {
+      "file": "head_pose_face_detection_female.mp4",
+      "frames": 320
+    },
+    "unseen room, unseen people": {
+      "file": "face_demographics_walking_and_pause.mp4",
+      "frames": 98
+    }
+  },
+  "models": {
+    "ablation_1_baseline": {
+      "note": "fixed input scaling, light augmentation, MUCT only, 14 epochs",
+      "validation_eer": 0.07755137485420313,
+      "clips": {
+        "same room, unseen person": {
+          "median_score": 0.09160427749156952,
+          "rejected_at_eer_threshold": 0.975,
+          "rejected_at_apcer_5pct_threshold": 0.996875,
+          "rejected_at_apcer_1pct_threshold": 1.0,
+          "rejected_at_forgiving_threshold": 0.925,
+          "rejected_at_shipped_operating_point": 0.975,
+          "median_face_px": 143.83251953125,
+          "clip_used_in_training": false
+        },
+        "unseen room, unseen people": {
+          "median_score": 0.030759714543819427,
+          "rejected_at_eer_threshold": 1.0,
+          "rejected_at_apcer_5pct_threshold": 1.0,
+          "rejected_at_apcer_1pct_threshold": 1.0,
+          "rejected_at_forgiving_threshold": 1.0,
+          "rejected_at_shipped_operating_point": 1.0,
+          "median_face_px": 103.23807525634766,
+          "clip_used_in_training": false
+        }
+      }
+    },
+    "ablation_2_invariant_inputs": {
+      "note": "per image standardisation and randomised camera appearance, MUCT only, 4 epochs",
+      "validation_eer": 0.11599616347960014,
+      "clips": {
+        "same room, unseen person": {
+          "median_score": 0.6741949915885925,
+          "rejected_at_eer_threshold": 0.7875,
+          "rejected_at_apcer_5pct_threshold": 0.978125,
+          "rejected_at_apcer_1pct_threshold": 1.0,
+          "rejected_at_forgiving_threshold": 0.08125,
+          "rejected_at_shipped_operating_point": 0.7875,
+          "median_face_px": 143.83251953125,
+          "clip_used_in_training": false
+        },
+        "unseen room, unseen people": {
+          "median_score": 0.040667781606316566,
+          "rejected_at_eer_threshold": 1.0,
+          "rejected_at_apcer_5pct_threshold": 1.0,
+          "rejected_at_apcer_1pct_threshold": 1.0,
+          "rejected_at_forgiving_threshold": 0.7755102040816326,
+          "rejected_at_shipped_operating_point": 1.0,
+          "median_face_px": 103.23807525634766,
+          "clip_used_in_training": false
+        }
+      }
+    },
+    "ablation_3_second_domain": {
+      "note": "as before plus one real clip as a second training domain, 5 epochs",
+      "validation_eer": 0.11533215847263584,
+      "clips": {
+        "same room, unseen person": {
+          "median_score": 0.9592598974704742,
+          "rejected_at_eer_threshold": 0.084375,
+          "rejected_at_apcer_5pct_threshold": 0.128125,
+          "rejected_at_apcer_1pct_threshold": 0.284375,
+          "rejected_at_forgiving_threshold": 0.00625,
+          "rejected_at_shipped_operating_point": 0.084375,
+          "median_face_px": 143.83251953125,
+          "clip_used_in_training": false
+        },
+        "unseen room, unseen people": {
+          "median_score": 0.04506534896790981,
+          "rejected_at_eer_threshold": 0.9897959183673469,
+          "rejected_at_apcer_5pct_threshold": 1.0,
+          "rejected_at_apcer_1pct_threshold": 1.0,
+          "rejected_at_forgiving_threshold": 0.8061224489795918,
+          "rejected_at_shipped_operating_point": 0.9897959183673469,
+          "median_face_px": 103.23807525634766,
+          "clip_used_in_training": false
+        }
+      }
+    },
+    "ablation_4_clutter": {
+      "note": "as before plus background clutter in training, 12 epochs",
+      "validation_eer": 0.1204185324007533,
+      "clips": {
+        "same room, unseen person": {
+          "median_score": 0.9496597349643707,
+          "rejected_at_eer_threshold": 0.009375,
+          "rejected_at_apcer_5pct_threshold": 0.06875,
+          "rejected_at_apcer_1pct_threshold": 0.409375,
+          "rejected_at_forgiving_threshold": 0.0,
+          "rejected_at_shipped_operating_point": 0.009375,
+          "median_face_px": 143.83251953125,
+          "clip_used_in_training": false
+        },
+        "unseen room, unseen people": {
+          "median_score": 0.4716120958328247,
+          "rejected_at_eer_threshold": 0.6836734693877551,
+          "rejected_at_apcer_5pct_threshold": 0.8469387755102041,
+          "rejected_at_apcer_1pct_threshold": 1.0,
+          "rejected_at_forgiving_threshold": 0.40816326530612246,
+          "rejected_at_shipped_operating_point": 0.6836734693877551,
+          "median_face_px": 103.23807525634766,
+          "clip_used_in_training": false
+        }
+      }
+    },
+    "shipped": {
+      "note": "",
+      "validation_eer": 0.12392432870203413,
+      "clips": {
+        "same room, unseen person": {
+          "median_score": 0.9385012984275818,
+          "rejected_at_eer_threshold": 0.0,
+          "rejected_at_apcer_5pct_threshold": 0.0125,
+          "rejected_at_apcer_1pct_threshold": 0.715625,
+          "rejected_at_forgiving_threshold": 0.0,
+          "rejected_at_shipped_operating_point": 0.0,
+          "median_face_px": 143.83251953125,
+          "clip_used_in_training": false
+        },
+        "unseen room, unseen people": {
+          "median_score": 0.9450689554214478,
+          "rejected_at_eer_threshold": 0.0,
+          "rejected_at_apcer_5pct_threshold": 0.1326530612244898,
+          "rejected_at_apcer_1pct_threshold": 0.5204081632653061,
+          "rejected_at_forgiving_threshold": 0.0,
+          "rejected_at_shipped_operating_point": 0.0,
+          "median_face_px": 103.23807525634766,
+          "clip_used_in_training": true
+        }
+      }
+    }
+  }
+}

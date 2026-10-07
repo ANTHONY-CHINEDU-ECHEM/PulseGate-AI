@@ -1,0 +1,32 @@
+{
+  "machine": {
+    "processor": "x86_64",
+    "system": "Linux",
+    "cpu_threads_used": 1
+  },
+  "frame_size": [
+    768,
+    432
+  ],
+  "face_detection": {
+    "median_ms": 8.93,
+    "p95_ms": 10.45,
+    "runs": 40
+  },
+  "tracking_with_landmarks": {
+    "median_ms": 4.22,
+    "p95_ms": 17.36,
+    "runs": 145
+  },
+  "passive_model_three_patches": {
+    "median_ms": 9.13,
+    "p95_ms": 11.86,
+    "runs": 126
+  },
+  "full_session_update": {
+    "median_ms": 14.06,
+    "p95_ms": 21.62,
+    "runs": 145
+  },
+  "frames_per_second_possible": 71.1
+}
