@@ -4,7 +4,10 @@
 
 Presentation attack detection through texture analysis, random challenges, depth from motion and remote pulse measurement, with a real time webcam application, an HTTP service and a fully reproducible training and evaluation pipeline.
 
-![A complete liveness session on real footage](docs/images/session_screens.png)
+<p align="center">
+  <img width="2140" height="997" alt="session_screens" src="https://github.com/user-attachments/assets/479b440a-4561-401e-8033-2a703bed950c" />
+</p>
+
 
 ## Project Brief
 
@@ -33,7 +36,9 @@ The most useful result of the project is a failure that was caught and explained
 
 Every model is judged at its own balanced threshold from validation data. The first column rests on 320 frames of one person, the second on 98 frames of four people, so the percentages are coarse. The pattern is not. Each stage removed one shortcut: camera style, then codec softness, then the assumption that straight edges near a face are paper borders.
 
-![Genuine people rejected at each stage](reports/figures/domain_gap.png)
+<p align="center">
+  <img width="1930" height="886" alt="domain_gap" src="https://github.com/user-attachments/assets/c5d36860-e841-4667-8353-b143c8ed14b3" />
+</p>
 
 **2. The honest accuracy of single frame texture analysis is moderate, and it varies a lot by attack.** On 4,437 test images of 42 people who appear nowhere in training, the shipped model reaches an area under the curve of 0.955 (95 percent interval 0.946 to 0.962) and an equal error rate of 11.4 percent (10.2 to 12.6). At its balanced threshold it rejects 9.3 percent of genuine presentations and accepts 13.3 percent of attacks. Behind that average sit very different instruments.
 
@@ -54,7 +59,9 @@ The numbers are lower than those usually quoted for this task, for a reason that
 
 **5. A tilted photograph does not look like a turning head, and the difference is measurable.** The depth test was validated on real photographs: 276 people photographed by five cameras at the same instant, which gives true changes of viewpoint. Against 552 software tilted copies of the frontal photographs it separated 433 real view pairs perfectly, with an area under the curve of 1.000. A second result came for free. Tilting a flat photograph by 15 to 30 degrees moved the estimated head yaw by a median of only 2.8 degrees, and no tilted photograph reached the 16 degrees a turn prompt requires. Faking a head turn with a sheet of paper fails twice.
 
-![Depth from motion on real multi camera photographs](reports/figures/depth_cue.png)
+<p align="center">
+  <img width="1382" height="744" alt="depth_cue" src="https://github.com/user-attachments/assets/3273c327-9693-4bc2-8d22-4c4bb69d4a89" />
+</p>
 
 **6. Remote pulse works when the signal is there and is honest about it when it is not.** On heavily compressed real video at 12 frames per second the skin signal was too weak to carry a pulse reading on its own (median signal to noise ratio of minus 3.2 decibel). When a synthetic heartbeat of known rate was injected into the skin pixels of that same footage at 0.6 percent amplitude, the whole pipeline recovered the rate within 3 beats per minute in 12 of 12 runs, with a mean error of 0.3 beats. Pulse is therefore wired in as supporting evidence only: it can lift a borderline session and can never sink a real user.
 
@@ -68,25 +75,35 @@ The numbers are lower than those usually quoted for this task, for a reason that
 
 **What the camera sees.** One genuine presentation and the five attack instruments the simulator produces, with a magnified skin patch below each. The patches show why the texture stream works at native resolution: halftone dots and moire live at the scale of single pixels and vanish when an image is resized.
 
-![Genuine presentation and five attack instruments](docs/images/attack_gallery.png)
+<p align="center">
+  <img width="2027" height="1069" alt="attack_gallery" src="https://github.com/user-attachments/assets/ee2cb3c6-7ef6-464d-be0d-99cf945a131d" />
+</p>
 
 **What the model reacts to.** Grad CAM maps for the context stream, drawn on one brightness scale. For the phone replay the evidence sits on the bezel. The monitor replay in this row fills the frame, shows no edge and is accepted with a score of 0.91, which is exactly the kind of attack the other three signals exist for.
 
-![Where the model finds evidence of an attack](docs/images/explanations.png)
+<p align="center">
+  <img width="2027" height="963" alt="explanations" src="https://github.com/user-attachments/assets/f74032d8-9539-44ea-9d0b-c68443449176" />
+</p>
 
 **Blink detection on real footage.** Eye opening relative to the user's own baseline over thirty seconds. Of 17 events detected in the full clip, 16 were confirmed as blinks by inspecting the frames and 1 was a long downward glance.
 
-![Blink detection](reports/figures/blink_trace.png)
+<p align="center">
+  <img width="1919" height="640" alt="blink_trace" src="https://github.com/user-attachments/assets/3f38b779-acb4-4b74-89bf-24395e77a5ad" />
+</p>
 
 **Remote pulse.** The skin colour signal and its spectrum for real footage as recorded, and for the same footage with an injected heartbeat of 84 beats per minute.
 
-![Remote pulse](reports/figures/pulse.png)
+<p align="center">
+  <img width="1792" height="997" alt="pulse" src="https://github.com/user-attachments/assets/0f8beb3f-f1fe-42b9-9454-94a01e438272" />
+</p>
 
 All faces in these figures come from openly licensed sample footage. No photograph from the training database is shown anywhere in this repository, as its authors request.
 
 ## How It Works
 
-![Architecture](docs/images/architecture.png)
+<p align="center">
+  <img width="1785" height="896" alt="architecture" src="https://github.com/user-attachments/assets/34b06327-e63a-4565-9df5-760a9d1cd174" />
+</p>
 
 <table>
 <tr><th>Signal</th><th>What it measures</th><th>Attack it stops</th><th>Validated on</th></tr>
@@ -144,9 +161,14 @@ The full description, including terms of use and known gaps, is in [docs/data_ca
 
 Error rates follow ISO/IEC 30107 part 3. APCER is the share of attacks accepted, reported for all attacks pooled and for the worst instrument. BPCER is the share of genuine presentations rejected. Thresholds were chosen on validation data and never adjusted on the test partition. Confidence intervals come from resampling whole people, not single images.
 
-![Score distribution](reports/figures/score_distribution.png)
+<p align="center">
+  <img width="1550" height="1057" alt="score_distribution" src="https://github.com/user-attachments/assets/60b98acf-58be-42b5-a963-2f97f19049ca" />
+</p>
 
-![Detection error trade off](reports/figures/det_curves.png)
+
+<p align="center">
+  <img width="1054" height="928" alt="det_curves" src="https://github.com/user-attachments/assets/f77df926-722f-41a5-8394-43c3fa8cbb58" />
+</p>
 
 ### Attacks the model was never shown
 
@@ -165,7 +187,9 @@ Each run trains for 5 epochs on 14,000 samples and is judged at its balanced thr
 
 Prints and replays roughly double their acceptance when the model has never seen their family, so part of what it learned carries over. The paper mask is the opposite case: trivial once seen, and accepted three times out of four when not. A mask shows real hair, real ears and a real room, and only examples teach a network to look at the cut line. The practical reading is that an attack catalogue is never finished, and that the checks which do not depend on appearance are what cover the gap. A paper mask that fools the texture model still fails the depth test.
 
-![Attack acceptance by instrument](reports/figures/apcer_by_species.png)
+<p align="center">
+  <img width="1972" height="718" alt="apcer_by_species" src="https://github.com/user-attachments/assets/8e3d76b5-3229-437f-a064-323d94593fcb" />
+</p>
 
 ### Fairness across capture conditions
 
@@ -181,13 +205,17 @@ Genuine presentations rejected at the balanced threshold, by the attributes reco
 
 The gap between the recorded genders is small. Glasses and lighting matter more. Age and skin tone are not labelled in the source database, so no claim is made about them. A deployment should measure both on its own users.
 
-![Genuine rejection by condition](reports/figures/bpcer_by_condition.png)
+<p align="center">
+  <img width="2338" height="692" alt="bpcer_by_condition" src="https://github.com/user-attachments/assets/e9261736-539a-4321-97c4-315d0f43508d" />
+</p>
 
 ### Robustness to image quality
 
 The test images were degraded one property at a time with the threshold left unchanged. Compression down to JPEG quality 15 and resolution down to 30 percent barely move the error rates. Strong blur lets more attacks through, because it erases their texture. Heavy sensor noise and severe underexposure raise the rejection of genuine users, which is why the application checks brightness and sharpness before it scores a frame.
 
-![Robustness](reports/figures/robustness.png)
+<p align="center">
+  <img width="2185" height="694" alt="robustness" src="https://github.com/user-attachments/assets/a6b5703a-ac6f-4308-b7c8-13355178edaf" />
+</p>
 
 ### Signals validated on real data
 
@@ -205,7 +233,9 @@ The test images were degraded one property at a time with the threshold left unc
 <tr><td>Full sessions, simulated attacks</td><td>20 windows, four per instrument</td><td>0 accepted, 19 rejected, 1 inconclusive</td></tr>
 </table>
 
-![Sessions on real video](reports/figures/video_sessions.png)
+<p align="center">
+  <img width="1575" height="768" alt="video_sessions" src="https://github.com/user-attachments/assets/e330ef87-5456-41e6-8167-f454862e2a6b" />
+</p>
 
 ### Latency
 
