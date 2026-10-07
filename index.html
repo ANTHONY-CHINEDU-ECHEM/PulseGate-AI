@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PulseGate AI</title>
+<style>
+  :root { --bg:#12161c; --panel:#1b222c; --ink:#eef2f6; --muted:#8c98a8; --line:#2b3542; --teal:#2bb3a3; --green:#3fc46b; --red:#e5484d; --amber:#f5a524; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 system-ui, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:980px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:22px; margin:0 0 4px; letter-spacing:.2px; }
+  p.lede { margin:0 0 20px; color:var(--muted); }
+  .grid { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:16px; }
+  @media (max-width:760px) { .grid { grid-template-columns:1fr; } }
+  .stage { position:relative; background:#000; border-radius:12px; overflow:hidden; aspect-ratio:4/3; border:1px solid var(--line); }
+  video { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); display:block; }
+  .oval { position:absolute; left:50%; top:47%; width:44%; height:68%; transform:translate(-50%,-50%); border:3px solid var(--amber); border-radius:50%; pointer-events:none; transition:border-color .2s; }
+  .prompt { position:absolute; left:0; right:0; bottom:0; padding:14px 16px; background:rgba(18,22,28,.78); text-align:center; font-size:20px; font-weight:600; min-height:58px; }
+  .prompt small { display:block; font-size:14px; font-weight:400; color:var(--amber); }
+  .bar { height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin-top:8px; }
+  .bar i { display:block; height:100%; width:0; background:var(--teal); transition:width .15s; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .card h2 { font-size:13px; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); margin:0 0 10px; }
+  button { font:inherit; font-weight:600; color:#06221f; background:var(--teal); border:0; border-radius:8px; padding:10px 16px; cursor:pointer; }
+  button.secondary { background:transparent; color:var(--ink); border:1px solid var(--line); }
+  button:disabled { opacity:.5; cursor:default; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .verdict { font-size:26px; font-weight:700; margin:4px 0 2px; }
+  .verdict.live { color:var(--green); } .verdict.not_live { color:var(--red); } .verdict.inconclusive { color:var(--amber); }
+  dl { display:grid; grid-template-columns:auto 1fr; gap:6px 14px; margin:12px 0 0; font-size:14px; }
+  dt { color:var(--muted); } dd { margin:0; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+  pre { background:#0d1116; border:1px solid var(--line); border-radius:8px; padding:12px; font-size:12px; overflow:auto; max-height:260px; margin:12px 0 0; }
+  .note { color:var(--muted); font-size:13px; margin-top:12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>PulseGate AI</h1>
+  <p class="lede">Liveness check in the browser. Frames go to this server only and are not stored.</p>
+  <div class="grid">
+    <div>
+      <div class="stage">
+        <video id="video" autoplay playsinline muted></video>
+        <div class="oval" id="oval"></div>
+        <div class="prompt"><span id="prompt">Press start</span><small id="guidance"></small><div class="bar"><i id="progress"></i></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Session</h2>
+      <div class="row">
+        <button id="start">Start check</button>
+        <button id="passive" class="secondary">Passive only</button>
+      </div>
+      <div id="verdict" class="verdict"></div>
+      <dl id="facts"></dl>
+      <pre id="raw" hidden></pre>
+      <p class="note">Interactive mode asks for three random actions. Passive mode watches for ten seconds without prompts.</p>
+    </div>
+  </div>
+</main>
+<canvas id="canvas" width="640" height="480" hidden></canvas>
+<script>
+const $ = (id) => document.getElementById(id);
+const video = $("video"), canvas = $("canvas"), ctx = canvas.getContext("2d");
+let sessionId = null, busy = false, timer = null;
+
+async function camera() {
+  if (video.srcObject) return;
+  const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: "user" }, audio: false });
+  video.srcObject = stream;
+  await new Promise((resolve) => (video.onloadedmetadata = resolve));
+}
+
+function show(status) {
+  $("prompt").textContent = status.prompt || "";
+  $("guidance").textContent = status.guidance || "";
+  $("progress").style.width = Math.round((status.challenge_progress || 0) * 100) + "%";
+  const colour = status.result ? { live: "var(--green)", not_live: "var(--red)", inconclusive: "var(--amber)" }[status.result.decision]
+    : (status.stage === "positioning" ? "var(--amber)" : "var(--teal)");
+  $("oval").style.borderColor = colour;
+  if (status.result) finish(status.result);
+}
+
+function finish(result) {
+  clearInterval(timer); timer = null; sessionId = null;
+  $("start").disabled = false; $("passive").disabled = false;
+  const label = { live: "Live person", not_live: "Not verified", inconclusive: "Please retry" }[result.decision];
+  $("verdict").textContent = label; $("verdict").className = "verdict " + result.decision;
+  const s = result.signals;
+  const facts = [
+    ["Score", result.score.toFixed(2)],
+    ["Reasons", result.reasons.join(", ").replaceAll("_", " ")],
+    ["Passive model", s.passive.score !== undefined ? s.passive.score.toFixed(2) + " (threshold " + s.passive.threshold.toFixed(2) + ")" : "no usable frames"],
+    ["Challenges", s.challenges.length ? s.challenges.map((c) => c.challenge.replaceAll("_", " ") + (c.passed ? " ✓" : " ✗")).join(", ") : "none"],
+    ["Depth cue", s.depth.valid ? s.depth.residual.toFixed(3) : "not measured"],
+    ["Pulse", s.pulse.valid ? Math.round(s.pulse.bpm) + " bpm, " + s.pulse.snr_db.toFixed(1) + " dB" : "not measured"],
+    ["Blinks", String(s.blinks)],
+    ["Duration", result.duration_s.toFixed(1) + " s"],
+  ];
+  $("facts").innerHTML = facts.map(([k, v]) => "<dt>" + k + "</dt><dd>" + v + "</dd>").join("");
+  $("raw").hidden = false; $("raw").textContent = JSON.stringify(result, null, 2);
+}
+
+async function tick() {
+  if (busy || !sessionId) return;
+  busy = true;
+  try {
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.9));
+    const form = new FormData(); form.append("file", blob, "frame.jpg");
+    const response = await fetch("/v1/sessions/" + sessionId + "/frames", { method: "POST", body: form });
+    if (!response.ok) throw new Error((await response.json()).detail || response.statusText);
+    show(await response.json());
+  } catch (error) {
+    clearInterval(timer); timer = null; sessionId = null;
+    $("prompt").textContent = "Stopped: " + error.message;
+    $("start").disabled = false; $("passive").disabled = false;
+  } finally { busy = false; }
+}
+
+async function begin(mode) {
+  try {
+    await camera();
+  } catch (error) { $("prompt").textContent = "Camera not available: " + error.message; return; }
+  $("start").disabled = true; $("passive").disabled = true;
+  $("verdict").textContent = ""; $("facts").innerHTML = ""; $("raw").hidden = true;
+  const response = await fetch("/v1/sessions?mode=" + mode, { method: "POST" });
+  sessionId = (await response.json()).session_id;
+  timer = setInterval(tick, 70);
+}
+$("start").onclick = () => begin("interactive");
+$("passive").onclick = () => begin("passive");
+</script>
+</body>
+</html>
