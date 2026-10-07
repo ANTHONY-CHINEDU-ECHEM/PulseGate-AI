@@ -1,0 +1,11 @@
+# Start the HTTP service and the browser demo with: docker compose up
+services:
+  pulsegate:
+    build: .
+    image: pulsegate:1.0.0
+    ports:
+      - "8000:8000"
+    read_only: true
+    tmpfs:
+      - /tmp
+    restart: unless-stopped

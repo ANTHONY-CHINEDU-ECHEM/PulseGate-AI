@@ -1,0 +1,144 @@
+# PulseGate AI default configuration.
+# Every value can be overridden from the command line as key=value, for example
+#   python manage.py train train.epochs=20 train.batch_size=64
+# Relative paths are resolved against the repository root.
+
+paths:
+  muct_dir: data/raw/muct
+  dataset_dir: data/processed/pulsegate_pad
+  session_dir: data/processed/sessions
+  video_dir: data/raw/videos
+  capture_dir: data/captures
+  models_dir: models
+  reports_dir: reports
+  figures_dir: reports/figures
+
+assets:
+  detector: models/third_party/face_detection_yunet_2023mar.onnx
+  facemesh: models/third_party/face_mesh_468.onnx
+  canonical_face: models/third_party/canonical_face_468.npy
+  passive_model: models/pulsegate_net.onnx
+  passive_meta: models/pulsegate_net.json
+
+vision:
+  detector_score: 0.6
+  detector_nms: 0.3
+  detector_max_side: 480        # frames are downscaled to this size for detection only
+  redetect_every: 20            # frames between full detector runs while tracking
+  min_presence: 0.5             # face mesh presence probability needed to keep a track
+  roi_scale: 1.5                # face mesh crop size relative to the face extent
+
+crop:
+  context_scale: 1.8            # context crop side relative to the detector box
+  context_size: 112             # network input for the context stream
+  patch_size: 96                # native resolution patch for the texture stream
+  min_face_px: 90               # faces smaller than this are not scored
+  input_norm: standardise       # per image standardisation; 'fixed' is kept for the ablation
+
+quality:
+  min_face_px: 90
+  max_face_frac: 0.85           # face side relative to the short frame side
+  min_brightness: 45
+  max_brightness: 215
+  min_sharpness: 4.0            # variance of Laplacian on the face, measured at 128 pixels
+  max_abs_yaw_deg: 25
+  max_abs_pitch_deg: 22
+  center_tolerance: 0.30        # allowed offset of the face centre, fraction of frame
+
+dataset:
+  seed: 2026
+  frame_size: [480, 640]        # width, height of the simulated camera frame
+  live_variants: 3
+  species: [print_matte, print_glossy, replay_phone, replay_monitor, cutout_mask]
+  split: {train: 0.70, val: 0.15, test: 0.15}
+  jpeg_quality: 97
+  workers: 2
+
+train:
+  seed: 7
+  epochs: 12
+  batch_size: 96
+  lr: 0.002
+  weight_decay: 0.001
+  warmup_epochs: 1
+  label_smoothing: 0.03
+  aux_stream_weight: 0.5
+  aux_species_weight: 0.3
+  dropout: 0.3
+  stream_dropout: 0.15
+  ema_decay: 0.999              # the averaged weights are the ones validated and exported, 0 disables
+  degrade_probability: 0.85     # share of training crops that get random tone, colour, blur, noise and compression
+  clutter_probability: 0.6      # share of training crops that get door frames, pictures and lamps drawn around the head
+  num_workers: 2
+  width: 1.0
+  exclude_species: []           # used by the unseen attack protocol
+  max_train_samples: 0          # 0 keeps everything
+  run_name: pulsegate_net
+  resume: true                  # continue an interrupted run from its last finished epoch
+  init_checkpoint: null         # start from existing weights, used for the second training stage
+
+passive:
+  threshold: null               # null reads the operating point stored with the model
+  operating_point: eer          # images and passive clips: eer, bpcer_at_apcer_5pct, bpcer_at_apcer_1pct or apcer_at_bpcer_1pct
+  interactive_operating_point: apcer_at_bpcer_1pct   # sessions with challenges, where three more checks back the model up
+  min_frames: 8
+  aggregate: trimmed_mean
+  trim_fraction: 0.2
+  tta_patches: 3
+
+blink:
+  close_ratio: 0.72             # eye counts as closed below this fraction of the open baseline
+  open_ratio: 0.85
+  min_closed_s: 0.04
+  max_closed_s: 0.60
+  baseline_window_s: 4.0
+
+challenge:
+  count: 3
+  pool: [blink_twice, turn_left, turn_right, open_mouth, look_up]
+  timeout_s: 7.0
+  settle_s: 0.6                 # time for the user to read the prompt before responses count
+  turn_yaw_deg: 16
+  look_up_pitch_deg: 10
+  open_mouth_ratio: 0.38
+  neutral_yaw_deg: 9
+  positioning_s: 1.5
+
+depth:
+  min_yaw_delta_deg: 12
+  min_pairs: 3
+  residual_threshold: 0.032     # non planar residual, fraction of the eye distance
+
+rppg:
+  method: pos
+  min_seconds: 8.0
+  band_hz: [0.75, 3.0]
+  resample_hz: 30
+  snr_live_db: 2.0
+  snr_strong_db: 5.0
+
+fusion:
+  weights: {passive: 0.50, challenge: 0.25, depth: 0.15, pulse: 0.10}
+  live_threshold: 0.62
+  passive_floor_ratio: 0.5      # a passive score below this share of its threshold rejects the session outright
+  require_challenges: true
+
+session:
+  max_duration_s: 45
+  max_face_lost_s: 1.0
+  allow_multiple_faces: false
+  passive_window_s: 10.0
+
+api:
+  host: 127.0.0.1
+  port: 8000
+  session_ttl_s: 120
+  max_upload_mb: 40
+  max_video_seconds: 30
+
+webcam:
+  camera_index: 0
+  width: 1280
+  height: 720
+  mirror: true
+  window_name: PulseGate AI
